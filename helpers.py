@@ -1,6 +1,9 @@
 """
 Self-implemented helper classes, variables and functions
 """
+import sys
+import time
+import datetime
 
 
 class Task:
@@ -41,6 +44,11 @@ class Task:
         print("list_in_progress command executed.")
 
 
+tasks = [
+     
+]
+
+
 class Command:
     def __init__(self, name, arg_desc, arg_count):
         self.name = name
@@ -51,7 +59,19 @@ class Command:
     def execute_command(self, command, input):
         if  command.name == "add" and \
             len(input) >= 3:
-                command.add()
+                tasks.append(Task(len(tasks),
+                             ' '.join(input[2:]),
+                             "todo",
+                             datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S"),
+                             datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")))
+                
+                # print(tasks[0]._id,
+                #       tasks[0]._description,
+                #       tasks[0]._status,
+                #       tasks[0]._createdAt,
+                #       tasks[0]._updatedAt,
+                #       sep="\n"
+                #       )
                 print("Task has been added.")
 
         elif command.name == "update" and \

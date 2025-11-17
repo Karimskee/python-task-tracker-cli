@@ -5,8 +5,6 @@ currently working on. This project will help you practice your programming skill
 with the filesystem, handling user inputs, and building a simple CLI application.
 """
 from helpers import *
-import sys
-import time
 
 
 def main():
