@@ -14,6 +14,28 @@ class Task:
         self._createdAt = createdAt
         self._updatedAt = updatedAt
 
+    @property
+    def id(self):
+         return self._id
+    
+    @property
+    def description(self):
+         return self._description
+    
+    @property
+    def status(self):
+         return self._status
+    
+    @property
+    def createdAt(self):
+         return self._createdAt
+    
+    @property
+    def updatedAt(self):
+         return self._updatedAt
+    
+
+
     # TODO: Retrieve tasks from file
 
     def add(self):
@@ -45,7 +67,9 @@ class Task:
 
 
 tasks = [
-     
+    #  Task(0, "Hey", "todo", "today", "today"),
+    #  Task(1, "Hey", "todo", "today", "today"),
+    #  Task(2, "Hey", "todo", "today", "today"),
 ]
 
 
@@ -77,42 +101,55 @@ class Command:
         elif command.name == "update" and \
              len(input) >= 4 and \
              input[2].isnumeric():
-                command.update()
+                # TODO: update()
                 print("Task has been updated.")
 
         elif command.name == "delete" and \
              len(input) >= 3 and \
              input[2].isnumeric():
-                command.delete()
+                # TODO: delete()
                 print("Task has been deleted.")
 
         elif command.name == "mark-in-progress" and \
              len(input) >= 3 and \
              input[2].isnumeric():
-                command.mark_in_progress()
+                # TODO: mark_in_progress()
                 print("Task has been marked in progress.")
 
         elif command.name == "mark-done" and \
              len(input) >= 3 and \
              input[2].isnumeric():
-                command.mark_done()
+                # TODO: mark_done()
                 print("Task has been marked done.")
 
         elif command.name == "list":
                 if len(input) >= 3 and input[2] == "done":
-                    command.list_done()
+                    # TODO: list_done()
                     print("Finished tasks have been displayed.")
                     
                 elif len(input) >= 3 and input[2] == "todo":
-                    command.list_todo()
+                    # TODO: list_todo()
                     print("Todo tasks have been displayed.")
 
                 elif len(input) >= 3 and input[2] == "in-progress":
-                    command.list_in_progress()
+                    # TODO: list_in_progress()
                     print("In progress tasks have been displayed.")
 
                 else:
-                    command.list()
+                    # TODO: list()
+                    if len(tasks) == 0:
+                         print("No tasks to display")
+                    else:
+                         for task in tasks:
+                              print(
+                                   f"Task #{task.id}",
+                                   f"Description: {task.description}",
+                                   f"Status: {task.status}",
+                                   f"Created At: {task.createdAt}",
+                                   f"Updated At: {task.updatedAt}",
+                                   "",
+                                   sep="\n"
+                              )
                     print("All tasks have been displayed.")
         else:
             print(f"Invalid arguments, correct usage: {command.name} {command.arg_desc}")
