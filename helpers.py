@@ -8,33 +8,32 @@ import datetime
 
 class Task:
     def __init__(self, id, description, status, createdAt, updatedAt):
-        self._id = id
-        self._description = description
-        self._status = status
-        self._createdAt = createdAt
-        self._updatedAt = updatedAt
+        self.id = id
+        self.description = description
+        self.status = status
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
 
-    @property
-    def id(self):
-         return self._id
+    # @property
+    # def id(self):
+    #      return self._id
     
-    @property
-    def description(self):
-         return self._description
-    
-    @property
-    def status(self):
-         return self._status
-    
-    @property
-    def createdAt(self):
-         return self._createdAt
-    
-    @property
-    def updatedAt(self):
-         return self._updatedAt
-    
+    # @property
+    # def description(self):
+    #      return self._description
 
+    # @property
+    # def status(self):
+    #      return self._status
+    
+    # @property
+    # def createdAt(self):
+    #      return self._createdAt
+    
+    # @property
+    # def updatedAt(self):
+    #      return self._updatedAt
+    
 
     # TODO: Retrieve tasks from file
 
@@ -67,9 +66,9 @@ class Task:
 
 
 tasks = [
-    #  Task(0, "Hey", "todo", "today", "today"),
-    #  Task(1, "Hey", "todo", "today", "today"),
-    #  Task(2, "Hey", "todo", "today", "today"),
+     Task(0, "Hey", "todo", "today", "today"),
+     Task(1, "Hey", "todo", "today", "today"),
+     Task(2, "Hey", "todo", "today", "today"),
 ]
 
 
@@ -83,11 +82,13 @@ class Command:
     def execute_command(self, command, input):
         if  command.name == "add" and \
             len(input) >= 3:
-                tasks.append(Task(len(tasks),
-                             ' '.join(input[2:]),
-                             "todo",
-                             datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S"),
-                             datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")))
+                tasks.append(Task(
+                                    len(tasks),
+                                    ' '.join(input[2:]),
+                                    "todo",
+                                    datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S"),
+                                    datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+                                ))
                 
                 # print(tasks[0]._id,
                 #       tasks[0]._description,
@@ -96,13 +97,15 @@ class Command:
                 #       tasks[0]._updatedAt,
                 #       sep="\n"
                 #       )
-                print("Task has been added.")
+                print(f"Task added successfully (ID: {len(tasks)})")
 
         elif command.name == "update" and \
              len(input) >= 4 and \
-             input[2].isnumeric():
+             input[2].isnumeric() and int(input[2]) <= len(tasks) - 1:
                 # TODO: update()
-                print("Task has been updated.")
+                tasks[int(input[2])].description = input[3]
+                
+                print(f"Task updated successfully (ID: {input[2]})")
 
         elif command.name == "delete" and \
              len(input) >= 3 and \
