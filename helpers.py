@@ -111,8 +111,22 @@ class Command:
         elif command.name == "delete" and \
              len(input) >= 3 and \
              input[2].isnumeric():
-                # TODO: delete()
-                print("Task has been deleted.")
+                tasks_ids = [task.id for task in tasks]
+            
+                if input[2] not in tasks_ids: # Invalid task number
+                    print("Invalid task number.")
+                    print("No changes have been made.")
+
+                else: # Valid task number
+                    for task in tasks:
+                         if task.id == input[2]:
+                              tasks.remove(task)
+                              break
+                    
+                    for i in range(len(tasks)):
+                         tasks[i].id = i
+                         
+                    print(f"Task deleted successfully (ID: {input[2]})")
 
         elif command.name == "mark-in-progress" and \
              len(input) >= 3 and \
