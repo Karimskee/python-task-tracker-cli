@@ -102,6 +102,7 @@ class Command:
                 if int(input[2]) > len(tasks) - 1: # Invalid task number
                     print("Invalid task number.")
                     print("No changes have been made.")
+
                 else: # Valid task number
                     tasks[int(input[2])].description = input[3]
                     tasks[int(input[2])].updatedAt = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
@@ -111,18 +112,14 @@ class Command:
         elif command.name == "delete" and \
              len(input) >= 3 and \
              input[2].isnumeric():
-                tasks_ids = [task.id for task in tasks]
-            
-                if input[2] not in tasks_ids: # Invalid task number
+                if int(input[2]) > len(tasks) - 1: # Invalid task number
                     print("Invalid task number.")
                     print("No changes have been made.")
 
                 else: # Valid task number
-                    for task in tasks:
-                         if task.id == input[2]:
-                              tasks.remove(task)
-                              break
+                    tasks.pop(int(input[2]))
                     
+                    # Reassign IDs
                     for i in range(len(tasks)):
                          tasks[i].id = i
                          
@@ -132,6 +129,7 @@ class Command:
              len(input) >= 3 and \
              input[2].isnumeric():
                 # TODO: mark_in_progress()
+                
                 print("Task has been marked in progress.")
 
         elif command.name == "mark-done" and \
