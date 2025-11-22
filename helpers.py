@@ -128,14 +128,28 @@ class Command:
         elif command.name == "mark-in-progress" and \
              len(input) >= 3 and \
              input[2].isnumeric():
-                # TODO: mark_in_progress()
-                
-                print("Task has been marked in progress.")
+                if int(input[2]) > len(tasks) - 1: # Invalid task number
+                    print("Invalid task number.")
+                    print("No changes have been made.")
+
+                else: # Valid task number
+                    tasks[int(input[2])].status = "in-progress"
+                    tasks[int(input[2])].updatedAt = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+                         
+                    print(f"Task made in progress successfully (ID: {input[2]})")
 
         elif command.name == "mark-done" and \
              len(input) >= 3 and \
              input[2].isnumeric():
-                # TODO: mark_done()
+                if int(input[2]) > len(tasks) - 1: # Invalid task number
+                    print("Invalid task number.")
+                    print("No changes have been made.")
+
+                else: # Valid task number
+                    tasks[int(input[2])].status = "done"
+                    tasks[int(input[2])].updatedAt = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+                         
+                    print(f"Task made in progress successfully (ID: {input[2]})")
                 print("Task has been marked done.")
 
         elif command.name == "list":
