@@ -39,8 +39,6 @@ def main():
     print()
 
 
-
-# TODO: Retrieve tasks from database
 def retrieve_tasks():
     file_name = "tasks.csv"
     fieldnames = ["id", "description", "status", "createdAt", "updatedAt"]
@@ -61,7 +59,6 @@ def retrieve_tasks():
             ))
 
 
-# TODO: Store tasks to database
 def store_tasks():
     file_name = "tasks.csv"
     fieldnames = ["id", "description", "status", "createdAt", "updatedAt"]
