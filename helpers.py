@@ -104,7 +104,7 @@ class Command:
                     print("No changes have been made.")
 
                 else: # Valid task number
-                    tasks[int(input[2])].description = input[3]
+                    tasks[int(input[2])].description = ' '.join(input[3:])
                     tasks[int(input[2])].updatedAt = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
 
                     print(f"Task updated successfully (ID: {input[2]})")
