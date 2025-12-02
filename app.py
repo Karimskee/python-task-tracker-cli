@@ -4,7 +4,10 @@ command line interface (CLI) to track what you need to do, what you have done, a
 currently working on. This project will help you practice your programming skills, including working
 with the filesystem, handling user inputs, and building a simple CLI application.
 """
-from helpers import *
+
+import csv
+import sys
+from helpers import commands, print_commands, Task, tasks
 
 
 def main():
@@ -12,70 +15,95 @@ def main():
     retrieve_tasks()
 
     # Print the opening user interface
-    opening_ui = "\n\
-        \rA great day to manage some tasks out eh?\n\
-        \r========================================\n\
-        "
-    print(opening_ui)
+    print(
+        """
+A great day to manage some tasks out eh?
+========================================
+"""
+    )
 
     # Handle user input
-    input = sys.argv
-    input_size = len(input)
+    prompt = sys.argv
+    input_size = len(prompt)
 
-    if input_size <= 1: # Incorrect usage
-        print("Correct usage: python .\\task-cli.py [command] [argument 1] [argument 2] etc...\n")
+    if input_size <= 1:  # Incorrect usage
+
+        print(
+            "Correct usage: python .\\task-cli.py [command] [argument 1] [argument 2] etc...\n"
+        )
         print_commands()
 
-    elif input[1] not in [command.name for command in commands]: # Incorrect command
+    elif prompt[1] not in [command.name for command in commands]:  # Incorrect command
+
         print("Invalid command.")
         print_commands()
-    
-    else: # Correct command
-        command = [command for command in commands if input[1] == command.name][0]
-        command.execute_command(command, input) # Validate arguments and execute command
-        
-    store_tasks()
 
+    else:  # Correct command
+
+        command = [command for command in commands if prompt[1] == command.name][0]
+        command.execute_command(
+            command, prompt
+        )  # Validate arguments and execute command
+
+    store_tasks()
     print()
 
 
 def retrieve_tasks():
+    """
+    Retrieves tasks from a CSV file and stores them in the tasks list.
+
+    Opens a CSV file named "tasks.csv" in read mode and reads the header and all tasks from it.
+    The CSV file is then closed and the tasks are stored.
+    """
     file_name = "tasks.csv"
     fieldnames = ["id", "description", "status", "createdAt", "updatedAt"]
-    
-    with open(file_name, mode="r") as file:
+
+    with open(file_name, mode="r", encoding="utf-8") as file:
+
         reader = csv.DictReader(file, fieldnames=fieldnames)
 
         for row in reader:
-            if row["id"] == "id": # Skip header row
+
+            if row["id"] == "id":  # Skip header row
                 continue
 
-            tasks.append(Task(
-                row["id"],
-                row["description"],
-                row["status"],
-                row["createdAt"],
-                row["updatedAt"]
-            ))
+            tasks.append(
+                Task(
+                    row["id"],
+                    row["description"],
+                    row["status"],
+                    row["createdAt"],
+                    row["updatedAt"],
+                )
+            )
 
 
 def store_tasks():
+    """
+    Store tasks to a CSV file.
+
+    Opens a CSV file named "tasks.csv" in write mode and writes the header and all tasks to it.
+    The CSV file is then closed and the tasks are stored.
+    """
     file_name = "tasks.csv"
     fieldnames = ["id", "description", "status", "createdAt", "updatedAt"]
-    
-    with open(file_name, mode="w", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
 
+    with open(file_name, mode="w", newline="", encoding="utf-8") as file:
+
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
 
         for task in tasks:
-            writer.writerow({
-                "id": task.id,
-                "description": task.description,
-                "status": task.status,
-                "createdAt": task.createdAt,
-                "updatedAt": task.updatedAt
-            })
+            writer.writerow(
+                {
+                    "id": task.user_id,
+                    "description": task.description,
+                    "status": task.status,
+                    "createdAt": task.created_at,
+                    "updatedAt": task.updated_at,
+                }
+            )
 
 
 if __name__ == "__main__":
