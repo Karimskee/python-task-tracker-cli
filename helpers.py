@@ -32,16 +32,15 @@ tasks = []
 class Command:
     """For executing commands at the run time."""
 
-    def __init__(self, name, arg_desc, arg_count):
+    def __init__(self, name, arg_desc):
         """
         Initialize a Command object with the given parameters.
 
         Parameters:
         name (str): Name of the command
         arg_desc (str): Description of the command's arguments
-        arg_count (int): Number of arguments the command expects
         """
-        self.name, self.arg_desc, self.arg_count = name, arg_desc, arg_count
+        self.name, self.arg_desc, = name, arg_desc
 
     def execute_command(self, command, prompt):
         """
@@ -62,13 +61,6 @@ class Command:
                 )
             )
 
-            # print(tasks[0]._id,
-            #       tasks[0]._description,
-            #       tasks[0]._status,
-            #       tasks[0]._created_at,
-            #       tasks[0]._updated_at,
-            #       sep="\n"
-            #       )
             print(f"Task added successfully (ID: {len(tasks) - 1})")
 
         elif command.name == "update" and len(prompt) >= 4 and prompt[2].isnumeric():
@@ -204,12 +196,12 @@ class Command:
 
 
 commands = [
-    Command("add", "<Task description>", 1),
-    Command("update", "<Task number> <Task description>", 2),
-    Command("delete", "<Task number>", 1),
-    Command("mark-in-progress", "<Task number>", 1),
-    Command("mark-done", "<Task number>", 1),
-    Command("list", "(optionaldone / todo / in-progress)", 0),
+    Command("add", "<Task description>"),
+    Command("update", "<Task number> <Task description>"),
+    Command("delete", "<Task number>"),
+    Command("mark-in-progress", "<Task number>"),
+    Command("mark-done", "<Task number>"),
+    Command("list", "(optionaldone / todo / in-progress)"),
 ]
 
 
