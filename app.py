@@ -35,7 +35,7 @@ A great day to manage some tasks out eh?
 
     elif prompt[1] not in [command.name for command in commands]:  # Incorrect command
 
-        print("Invalid command.")
+        print("Invalid command.\n")
         print_commands()
 
     else:  # Correct command
@@ -57,7 +57,7 @@ def retrieve_tasks():
     The CSV file is then closed and the tasks are stored.
     """
     file_name = "tasks.csv"
-    fieldnames = ["id", "description", "status", "createdAt", "updatedAt"]
+    fieldnames = ["id", "description", "status", "created_at", "updated_at"]
 
     with open(file_name, mode="r", encoding="utf-8") as file:
 
@@ -73,8 +73,8 @@ def retrieve_tasks():
                     row["id"],
                     row["description"],
                     row["status"],
-                    row["createdAt"],
-                    row["updatedAt"],
+                    row["created_at"],
+                    row["updated_at"],
                 )
             )
 
@@ -87,7 +87,7 @@ def store_tasks():
     The CSV file is then closed and the tasks are stored.
     """
     file_name = "tasks.csv"
-    fieldnames = ["id", "description", "status", "createdAt", "updatedAt"]
+    fieldnames = ["id", "description", "status", "created_at", "updated_at"]
 
     with open(file_name, mode="w", newline="", encoding="utf-8") as file:
 
@@ -100,8 +100,8 @@ def store_tasks():
                     "id": task.user_id,
                     "description": task.description,
                     "status": task.status,
-                    "createdAt": task.created_at,
-                    "updatedAt": task.updated_at,
+                    "created_at": task.created_at,
+                    "updated_at": task.updated_at,
                 }
             )
 

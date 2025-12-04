@@ -41,9 +41,7 @@ class Command:
         arg_desc (str): Description of the command's arguments
         arg_count (int): Number of arguments the command expects
         """
-        self.name = name
-        self.arg_desc = arg_desc
-        self.arg_count = arg_count
+        self.name, self.arg_desc, self.arg_count = name, arg_desc, arg_count
 
     def execute_command(self, command, prompt):
         """
@@ -206,12 +204,12 @@ class Command:
 
 
 commands = [
-    Command("add", "[Task description]", 1),
-    Command("update", "[Task number] [Task description]", 2),
-    Command("delete", "[Task number]", 1),
-    Command("mark-in-progress", "[Task number]", 1),
-    Command("mark-done", "[Task number]", 1),
-    Command("list", "[done / todo / in-progress] or leave blank to show all tasks", 0),
+    Command("add", "<Task description>", 1),
+    Command("update", "<Task number> <Task description>", 2),
+    Command("delete", "<Task number>", 1),
+    Command("mark-in-progress", "<Task number>", 1),
+    Command("mark-done", "<Task number>", 1),
+    Command("list", "(optionaldone / todo / in-progress)", 0),
 ]
 
 
@@ -223,6 +221,9 @@ def print_commands():
     command_to_argument = f"{"command".ljust(max_key_size)}: Arguments"
     print(command_to_argument)
     print("-" * len(command_to_argument))
+
+    # Notation explanation
+    print("<> -> Required\n() -> Choose none or one\n")
 
     # Commands
     for command in commands:
