@@ -15,27 +15,6 @@ TASK_TEMPLATE = dict(
 )
 
 
-class Task:
-    """For managing tasks at the run time."""
-
-    def __init__(self, user_id, description, status, created_at, updated_at):
-        """
-        Initialize a Task object with the given parameters.
-
-        Parameters:
-        id (int): ID of the task
-        description (str): Description of the task
-        status (str): Status of the task, either "todo", "in-progress", or "done"
-        created_at (str): Timestamp when the task was created
-        updated_at (str): Timestamp when the task was last updated
-        """
-        self.user_id = user_id
-        self.description = description
-        self.status = status
-        self.created_at = created_at
-        self.updated_at = updated_at
-
-
 class Command:
     """For executing commands at the run time."""
     # FIXME Use a better approach
