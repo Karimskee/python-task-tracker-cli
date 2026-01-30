@@ -14,8 +14,34 @@ TASK_TEMPLATE = {
     "updated_at": str(),
 }
 
+
 def add_task(cmd : dict, args : str):
-    print("added task")
+    # Incorrect command usage
+    """Adds a task to the tasks list"""
+    if not args:
+        print("Improper usage.")
+        print(f"Correct usage: python app.py {cmd["name"]} {cmd["args"]}")
+
+        return False
+    # Correct command usage
+    else:
+        # Create task
+        task = TASK_TEMPLATE.copy()
+
+        task["task_id"] = len(tasks)
+        task["description"] = args
+        task["status"] = "todo"
+        task["created_at"] = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+        task["updated_at"] = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+
+        tasks.append(task)
+
+        # Print task details
+        print(f"Task added successfully.")
+        print(f"Task ID: {task["task_id"]}")
+        print(f"Task description: {task["description"]}")
+
+        return True
 
 
 def update_task(cmd : dict, args : str):
@@ -51,15 +77,15 @@ def list_all(cmd : dict, args : str):
 
 
 commands = [
-    {"name": "add", "runner": add_task, "description": "<task description>"},
-    {"name": "update", "runner": update_task, "description": "<task number> <task description>"},
-    {"name": "delete", "runner": delete_task, "description": "<task number>"},
-    {"name": "mark-in-progress", "runner": mark_in_progress, "description": "<task number>"},
-    {"name": "mark-done", "runner": mark_done, "description": "<task number>"},
-    {"name": "list done", "runner": list_done, "description": ""},
-    {"name": "list todo", "runner": list_todo, "description": ""},
-    {"name": "list in-progress", "runner": list_in_progress, "description": ""},
-    {"name": "list", "runner": list_all, "description": ""},
+    {"name": "add", "runner": add_task, "args": "<task description>"},
+    {"name": "update", "runner": update_task, "args": "<task number> <task description>"},
+    {"name": "delete", "runner": delete_task, "args": "<task number>"},
+    {"name": "mark-in-progress", "runner": mark_in_progress, "args": "<task number>"},
+    {"name": "mark-done", "runner": mark_done, "args": "<task number>"},
+    {"name": "list done", "runner": list_done, "args": ""},
+    {"name": "list todo", "runner": list_todo, "args": ""},
+    {"name": "list in-progress", "runner": list_in_progress, "args": ""},
+    {"name": "list", "runner": list_all, "args": ""},
 ]
 
 
@@ -74,7 +100,6 @@ def execute_command(prompt : str):
 
 class Command:
     """For executing commands at the run time."""
-    # FIXME Use a better approach
     def __init__(self, name, arg_desc):
         """
         Initialize a Command object with the given parameters.
@@ -93,20 +118,7 @@ class Command:
         command (Command): Command to be executed
         input (list): List of arguments to be passed to the command
         """
-        if command.name == "add" and len(prompt) >= 3:
-            task = TASK_TEMPLATE.copy()
-
-            task["task_id"] = len(tasks),
-            task["description"] = " ".join(prompt[2:]),
-            task["status"] = "todo",
-            task["created_at"] = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S"),
-            task["updated_at"] = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S"),
-
-            tasks.append(task)
-
-            print(f"Task added successfully (ID: {task["task_id"]})")
-
-        elif command.name == "update" and len(prompt) >= 4 and prompt[2].isnumeric():
+        if command.name == "update" and len(prompt) >= 4 and prompt[2].isnumeric():
             if int(prompt[2]) > len(tasks) - 1:  # Invalid task number
                 print("Invalid task number.")
                 print("No changes have been made.")
@@ -258,4 +270,4 @@ def print_commands():
 
     # Commands
     for command in commands:
-        print(f"{command["name"]} {command["description"]}")
+        print(f"{command["name"]} {command["args"]}")
