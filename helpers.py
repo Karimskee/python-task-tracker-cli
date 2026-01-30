@@ -19,7 +19,6 @@ def add_task(cmd : dict, args : str):
 
 
 def update_task(cmd : dict, args : str):
-    print(f"args: {args}")
     print("updated task")
 
 
@@ -241,16 +240,6 @@ class Command:
                 f"Invalid arguments, correct usage: {command.name} {command.arg_desc}"
             )
             print("No changes have been made.")
-
-
-# commands = [
-#     Command("add", "<Task description>"),
-#     Command("update", "<Task number> <Task description>"),
-#     Command("delete", "<Task number>"),
-#     Command("mark-in-progress", "<Task number>"),
-#     Command("mark-done", "<Task number>"),
-#     Command("list", "(optionaldone / todo / in-progress)"),
-# ]
 
 
 def print_commands():
