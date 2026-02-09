@@ -25,7 +25,7 @@ def improper_usage(cmd: dict):
 
 def print_task(task: dict, cmd: dict):
     """Prints a task to the console."""
-    print(f"Task {cmd["name"]} successfully.")
+    print(f"Task {cmd["name"]}ed successfully.")
     print(f"Task ID: {task['task_id']}")
     print(f"Task description: {task['description']}")
     print(f"Task status: {task['status']}")
@@ -45,9 +45,6 @@ def is_valid_arguments(cmd: dict, args: list, required_args_types: list) -> int:
     # Incorrect argument types
     args_types = [int if arg.isnumeric() else type(arg) for arg in args[:required_args_num]]
 
-    print(required_args_types)
-    print(args_types)
-
     # # For each required argument
     for i in range(required_args_num):
         if required_args_types[i] == any:   # No specific argument type
@@ -58,12 +55,12 @@ def is_valid_arguments(cmd: dict, args: list, required_args_types: list) -> int:
             return 2    # Incorrect argument type
 
     # If empty tasks list
-    if args_types[0] == int and not tasks:
+    if int in args_types and not tasks:
         print(f"No tasks to {cmd["name"]}.")
         return 3    # No tasks
 
     # Incorrect task number
-    if args_types[0] == int and int(args[0]) >= len(tasks):
+    if int in args_types and int([arg for arg in args if arg.isnumeric()][0]) >= len(tasks):
         print("Invalid task number.")
         return 4    # Invalid task number (task number is greater than the number of tasks)
 
@@ -96,7 +93,6 @@ def add_task(cmd: dict, args: list):
 def update_task(cmd: dict, args: list):
     """Updates an existing task in the tasks list"""
     # Validate arguments
-    # # Convert args to a list
     if is_valid_arguments(cmd, args, [int, any]) != 0:
         return False
 
@@ -115,7 +111,6 @@ def update_task(cmd: dict, args: list):
 def delete_task(cmd: dict, args: list):
     """Deletes an existing task from the tasks list."""
     # Validate arguments
-    # # Convert args to a list
     if is_valid_arguments(cmd, args, [int]) != 0:
         return False
 
@@ -132,12 +127,30 @@ def delete_task(cmd: dict, args: list):
     return True
 
 
-# def mark_in_progress(cmd: dict, args: str):
-#     print("mark in progress task")
+def mark(cmd: dict, args: list):
+    
+    # Validate arguments
+    if is_valid_arguments(cmd, args, [str, int]) != 0:
+        return False
+    
+    # Validate status
+    status = args[0]
 
+    if status not in ["in-progress", "done"]:
+        print(f'"{status}" is not a valid task status.')
+        print('Try using "in-progress" or "done" instead.')
+        return False
 
-# def mark_done(cmd: dict, args: str):
-#     print("marked done task")
+    # Update task details
+    task = tasks[int(args[1])]
+
+    task["status"] = status
+    task["updated_at"] = datetime.datetime.now().strftime(TIME_FORMAT)
+
+    # Print task details
+    print_task(task, cmd)
+
+    return True
 
 
 # def list_done(cmd: dict, args: str):
@@ -158,14 +171,9 @@ def delete_task(cmd: dict, args: list):
 
 commands = [
     {"name": "add", "runner": add_task, "args": "<task description>"},
-    {
-        "name": "update",
-        "runner": update_task,
-        "args": "<task number> <task description>",
-    },
+    {"name": "update", "runner": update_task, "args": "<task number> <task description>"},
     {"name": "delete", "runner": delete_task, "args": "<task number>"},
-    # {"name": "mark-in-progress", "runner": mark_in_progress, "args": "<task number>"},
-    # {"name": "mark-done", "runner": mark_done, "args": "<task number>"},
+    {"name": "mark", "runner": mark, "args": "<in-progress/done> <task number>"},
     # {"name": "list done", "runner": list_done, "args": ""},
     # {"name": "list todo", "runner": list_todo, "args": ""},
     # {"name": "list in-progress", "runner": list_in_progress, "args": ""},
@@ -181,136 +189,6 @@ def execute_command(prompt: str):
     cmd_to_execute = matching_cmds[0]
     args = prompt.removeprefix(cmd_to_execute["name"])
     cmd_to_execute["runner"](cmd=cmd_to_execute, args=args.split())
-
-
-# class Command:
-#     """For executing commands at the run time."""
-
-#     def __init__(self, name, arg_desc):
-#         """
-#         Initialize a Command object with the given parameters.
-
-#         Parameters:
-#         name (str): Name of the command
-#         arg_desc (str): Description of the command's arguments
-#         """
-#         self.name, self.arg_desc = name, arg_desc
-
-#     def execute_command(self, command, prompt):
-#         """
-#         Execute a command with the given arguments.
-
-#         Parameters:
-#         command (Command): Command to be executed
-#         input (list): List of arguments to be passed to the command
-#         """
-#         if (
-#             command.name == "mark-in-progress"
-#             and len(prompt) >= 3
-#             and prompt[2].isnumeric()
-#         ):
-#             if int(prompt[2]) > len(tasks) - 1:  # Invalid task number
-#                 print("Invalid task number.")
-#                 print("No changes have been made.")
-
-#             else:  # Valid task number
-#                 tasks[int(prompt[2])].status = "in-progress"
-#                 tasks[int(prompt[2])].updated_at = datetime.datetime.now().strftime(
-#                     TIME_FORMAT
-#                 )
-
-#                 print(f"Task made in progress successfully (ID: {prompt[2]})")
-
-#         elif command.name == "mark-done" and len(prompt) >= 3 and prompt[2].isnumeric():
-#             if int(prompt[2]) > len(tasks) - 1:  # Invalid task number
-#                 print("Invalid task number.")
-#                 print("No changes have been made.")
-
-#             else:  # Valid task number
-#                 tasks[int(prompt[2])].status = "done"
-#                 tasks[int(prompt[2])].updated_at = datetime.datetime.now().strftime(
-#                     TIME_FORMAT
-#                 )
-
-#                 print(f"Task made in progress successfully (ID: {prompt[2]})")
-#                 print("Task has been marked done.")
-
-#         elif command.name == "list":
-#             if len(prompt) >= 3 and prompt[2] == "done":
-#                 if len(tasks) == 0:
-#                     print("No tasks to display")
-#                 else:
-#                     for task in tasks:
-#                         if task.status == "done":
-#                             print(
-#                                 f"Task #{task.user_id}",
-#                                 f"Description: {task.description}",
-#                                 f"Status: {task.status}",
-#                                 f"Created At: {task.created_at}",
-#                                 f"Updated At: {task.updated_at}",
-#                                 "",
-#                                 sep="\n",
-#                             )
-
-#                     print("Finished tasks have been displayed.")
-
-#             elif len(prompt) >= 3 and prompt[2] == "todo":
-#                 if len(tasks) == 0:
-#                     print("No tasks to display")
-#                 else:
-#                     for task in tasks:
-#                         if task.status == "todo":
-#                             print(
-#                                 f"Task #{task.user_id}",
-#                                 f"Description: {task.description}",
-#                                 f"Status: {task.status}",
-#                                 f"Created At: {task.created_at}",
-#                                 f"Updated At: {task.updated_at}",
-#                                 "",
-#                                 sep="\n",
-#                             )
-
-#                     print("Todo tasks have been displayed.")
-
-#             elif len(prompt) >= 3 and prompt[2] == "in-progress":
-#                 if len(tasks) == 0:
-#                     print("No tasks to display")
-#                 else:
-#                     for task in tasks:
-#                         if task.status == "in-progress":
-#                             print(
-#                                 f"Task #{task.user_id}",
-#                                 f"Description: {task.description}",
-#                                 f"Status: {task.status}",
-#                                 f"Created At: {task.created_at}",
-#                                 f"Updated At: {task.updated_at}",
-#                                 "",
-#                                 sep="\n",
-#                             )
-
-#                     print("In progress tasks have been displayed.")
-
-#             else:
-#                 if len(tasks) == 0:
-#                     print("No tasks to display")
-#                 else:
-#                     for task in tasks:
-#                         print(
-#                             f"Task #{task.user_id}",
-#                             f"Description: {task.description}",
-#                             f"Status: {task.status}",
-#                             f"Created At: {task.created_at}",
-#                             f"Updated At: {task.updated_at}",
-#                             "",
-#                             sep="\n",
-#                         )
-
-#                     print("All tasks have been displayed.")
-#         else:
-#             print(
-#                 f"Invalid arguments, correct usage: {command.name} {command.arg_desc}"
-#             )
-#             print("No changes have been made.")
 
 
 def print_commands():
