@@ -1,11 +1,6 @@
-# Python Task Tracker
-Task tracker is a project used to track and manage your tasks. A simple command line interface (CLI) to track what you need to do, what you have done, and what you are currently working on.
-
-## Known issues# 📌 Task Tracker CLI
+📌 Task Tracker CLI
 
 A simple, interactive **Command Line Task Tracker** built with Python that helps you manage your daily tasks directly from the terminal.
-
----
 
 ## 🚀 Features
 
@@ -16,8 +11,6 @@ A simple, interactive **Command Line Task Tracker** built with Python that helps
 - User-friendly CLI interface  
 - Saves tasks locally in **JSON format**
 
----
-
 ## 🧰 Built With
 
 - Python 3  
@@ -26,8 +19,6 @@ A simple, interactive **Command Line Task Tracker** built with Python that helps
   - json  
   - datetime  
   - os  
-
----
 
 ## 📥 Installation
 
