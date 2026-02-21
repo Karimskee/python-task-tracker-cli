@@ -17,20 +17,23 @@ TASK_TEMPLATE = {
 }
 
 
-def improper_usage(cmd: dict):
+def improper_usage(cmd: dict) -> None:
     """Prints an improper usage message to the console."""
     print("Improper usage.")
     print(f"Correct usage: python app.py {cmd["name"]} {cmd["args"]}")
 
 
-def print_task(task: dict, cmd: dict):
+def print_task(task: dict, cmd: dict) -> None:
     """Prints a task to the console."""
-    print(f"Task {cmd["name"]}ed successfully.")
+    if cmd != {}:  # For commands that alters tasks
+        print(f"Task {cmd["name"]}ed successfully.")
+
     print(f"Task ID: {task['task_id']}")
     print(f"Task description: {task['description']}")
     print(f"Task status: {task['status']}")
     print(f"Task created at: {task['created_at']}")
     print(f"Task updated at: {task['updated_at']}")
+    print()
 
 
 def is_valid_arguments(cmd: dict, args: list, required_args_types: list) -> int:
@@ -73,7 +76,7 @@ def is_valid_arguments(cmd: dict, args: list, required_args_types: list) -> int:
     return 0
 
 
-def add_task(cmd: dict, args: list):
+def add_task(cmd: dict, args: list) -> bool:
     """Adds a task to the tasks list"""
     # Validate arguments
     if is_valid_arguments(cmd, args, [any]) != 0:
@@ -82,7 +85,7 @@ def add_task(cmd: dict, args: list):
     # Create task
     task = TASK_TEMPLATE.copy()
 
-    task["task_id"] = len(tasks)
+    task["task_id"] = len(tasks) + 1
     task["description"] = " ".join(args)
     task["status"] = "todo"
     task["created_at"] = datetime.datetime.now().strftime(TIME_FORMAT)
@@ -96,7 +99,7 @@ def add_task(cmd: dict, args: list):
     return True
 
 
-def update_task(cmd: dict, args: list):
+def update_task(cmd: dict, args: list) -> bool:
     """Updates an existing task in the tasks list"""
     # Validate arguments
     if is_valid_arguments(cmd, args, [int, any]) != 0:
@@ -114,7 +117,7 @@ def update_task(cmd: dict, args: list):
     return True
 
 
-def delete_task(cmd: dict, args: list):
+def delete_task(cmd: dict, args: list) -> bool:
     """Deletes an existing task from the tasks list."""
     # Validate arguments
     if is_valid_arguments(cmd, args, [int]) != 0:
@@ -125,7 +128,7 @@ def delete_task(cmd: dict, args: list):
 
     # Reassign IDs (so they always start from 0 and increment up to len(tasks) - 1)
     for i, task in enumerate(tasks):
-        task["task_id"] = i
+        task["task_id"] = i + 1
 
     # Print task details
     print_task(deleted_task, cmd)
@@ -133,17 +136,8 @@ def delete_task(cmd: dict, args: list):
     return True
 
 
-def mark(cmd: dict, args: list):
-    """
-    Marks a task as either "in-progress" or "done".
-
-    Parameters:
-    cmd (dict): A dictionary containing the command name and its arguments.
-    args (list): A list of arguments passed to the command.
-
-    Returns:
-    bool: True if the task was marked successfully, False otherwise.
-    """
+def mark(cmd: dict, args: list) -> bool:
+    """Marks a task as either "in-progress" or "done"."""
     # Validate arguments
     if is_valid_arguments(cmd, args, [str, int]) != 0:
         return False
@@ -168,20 +162,36 @@ def mark(cmd: dict, args: list):
     return True
 
 
-# def list_done(cmd: dict, args: str):
-#     print("listed done task")
+def list_tasks(cmd: dict, args: str) -> bool:
+    """Lists all tasks or tasks with a given status."""
+    # Validate arguments
+    if len(args) == 0 or args[0] not in [
+        "done",
+        "todo",
+        "in-progress",
+    ]:  # Print all tasks
+        if not tasks:
+            print("No tasks to display.")
+            return False
 
+        for task in tasks:
+            print_task(task, {})
 
-# def list_todo(cmd: dict, args: str):
-#     print("listed todo task")
+        print("All tasks have been listed.")
 
+    else:  # Print all tasks with the given status
+        tasks_by_status = [task for task in tasks if task["status"] == args[0]]
 
-# def list_in_progress(cmd: dict, args: str):
-#     print("listed in progress task")
+        if not tasks:
+            print(f"No {args[0]} tasks to display.")
+            return False
 
+        for task in tasks_by_status:
+            print_task(task, {})
 
-# def list_all(cmd: dict, args: str):
-#     print("listed all task")
+        print(f"All {args[0]} tasks have been listed.")
+
+    return True
 
 
 commands = [
@@ -193,24 +203,30 @@ commands = [
     },
     {"name": "delete", "runner": delete_task, "args": "<task number>"},
     {"name": "mark", "runner": mark, "args": "<in-progress/done> <task number>"},
-    # {"name": "list done", "runner": list_done, "args": ""},
-    # {"name": "list todo", "runner": list_todo, "args": ""},
-    # {"name": "list in-progress", "runner": list_in_progress, "args": ""},
-    # {"name": "list", "runner": list_all, "args": ""},
+    {"name": "list done", "runner": list_tasks, "args": ""},
+    {"name": "list todo", "runner": list_tasks, "args": ""},
+    {"name": "list in-progress", "runner": list_tasks, "args": ""},
+    {"name": "list", "runner": list_tasks, "args": ""},
 ]
 
 
-# REFACTOR pass arguments as a list
-def execute_command(prompt: str):
+def execute_command(prompt: str) -> None:
     """Execute a command based on the given prompt."""
     matching_cmds = [cmd for cmd in commands if prompt.startswith(cmd["name"])]
 
     cmd_to_execute = matching_cmds[0]
-    args = prompt.removeprefix(cmd_to_execute["name"])
+
+    # Remove the command from the prompt, so the rest of the prompt is the arguments
+    # An exception is made for the listing commands, as they are handled in a single function
+    if cmd_to_execute["name"].startswith("list"):
+        args = prompt.removeprefix("list")
+    else:
+        args = prompt.removeprefix(cmd_to_execute["name"])
+
     cmd_to_execute["runner"](cmd=cmd_to_execute, args=args.split())
 
 
-def print_commands():
+def print_commands() -> None:
     """Displays the list of program commands"""
     # Heading
     command_to_argument = "Commands and their arguments"
